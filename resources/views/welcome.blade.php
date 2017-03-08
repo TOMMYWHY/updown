@@ -47,28 +47,11 @@
 
         </style>
     </head>
-    <script>
-
-        function readImg(obj){
-            $("#img_div").empty();
-            for(var i=0;i<obj.files.length;i++){
-                var reader  = new FileReader();
-                reader.readAsDataURL(obj.files[i]);
-                reader.onload = function(e){
-                    $("#img_div").append("<img src='" + this.result  +  "'></img>");
-//                    $('#imgshow').attr('src',this.result);
-                }
-            }
-        }
-    </script>
     <body>
         <div class="container">
             <div class="content">
+                <img src="{{asset('resources/uploads/20170308_oo.jpg')}}" alt="">
                 <div class="title">Up Down</div>
-                <div class="center">
-                    {{--<a href="{{route('up')}}"><button class="btn btn-default">up</button></a>--}}
-                    {{--<a href="{{route('down')}}"><button class="btn btn-default" >down</button></a>--}}
-                </div>
             </div>
         </div>
         <div class="upFrom container">
@@ -82,9 +65,7 @@
                      <label for="">File:</label>
                      <input  multiple name="file_uploads[]" id="descImgs" type="file" onchange="readImg(this);" >
                  </div>
-
-                 <div id="img_div">
-                </div>
+                 <div id="img_div"></div>
                 <input type="submit" class="btn btn-primary" value="submit" >
             </form>
         </div>
@@ -104,24 +85,23 @@
                     <th>Owner</th>
                     <th>Thumbnail</th>
                     <th>Create time</th>
-                    <th>Code</th>
+                    <th width="70">Code</th>
                     <th>Option</th>
                 </tr>
                 @foreach($data as $item)
                     <tr>
                         <td>{{$item->files_name}}</td>
                         <td>{{$item->email}}</td>
-                        <td><img src="{{$item->location}}" style="height: 60px;overflow: hidden" alt=""></td>
+                        <td style=" max-width: 200px;overflow: hidden"><img src="{{$item->location}}" style="height: 60px;" alt=""></td>
                         <td>{{$item->created_at}}</td>
                         <td><input type="text" class="form-control" class="code" onchange="verifyCode(this,'{{$item->id}}')" /></td>
                         {{--<td><input type="text" class="form-control" class="code" /></td>--}}
                         <td>
-
-                                <a  href="{{$item->location}}"  download="{{$item->files_name}}">
-                                    <button class="btn btn-success"  id="{{$item->id}}" disabled="disabled"  >
-                                    Download
-                                    </button>
-                                </a>
+                            <a href="{{$item->location}}"  download="{{$item->files_name}}">
+                                <button class="btn btn-success"  id="{{$item->id}}" disabled="disabled"  >
+                                Download
+                                </button>
+                            </a>
                         </td>
                     </tr>
                     @endforeach
@@ -132,10 +112,7 @@
     </body>
 </html>
 <script>
-
     function verifyCode(obj,id) {
-        console.log(obj);
-        console.log(obj.value);
         $.post(
             "{{route('verifyCode')}}",{
                 'id':id,
@@ -153,20 +130,14 @@
             }
         );
     }
-
-     function download(id) {
-         $.post(
-             "{{route('download')}}",{
-                 'id':id,
-                 
-                 '_token':'{{csrf_token()}}',
-             },function (r) {
-                 console.log(r.status);
-                 if(r.status!=1){
-                 }else{
-//                     alert($(this));
-                 }
-             }
-         );
-     }
+    function readImg(obj){
+        $("#img_div").empty();
+        for(var i=0;i<obj.files.length;i++){
+            var reader  = new FileReader();
+            reader.readAsDataURL(obj.files[i]);
+            reader.onload = function(e){
+                $("#img_div").append("<img src='" + this.result  +  "'></img>");
+            }
+        }
+    }
 </script>

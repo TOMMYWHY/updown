@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
  use App\Updown;
  use Illuminate\Http\Request;
+
+ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\UploadedFile;
 use App\Http\Requests;
 //use Illuminate\Support\Facades\Input;
@@ -11,34 +13,27 @@ use App\Http\Requests;
 
 class UpController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
 
-        return view('up');
-    }
 
     public function upload(Request $request)
     {
-//        $asd=$request->all();
-//        dd($asd);
             /*多文件处理*/
             $file_path_arrs=array();
             $uploader=$request->email;
             $files = $request->file('file_uploads');
+            $radmon=mt_rand(100,999);
             foreach ($files as $key =>$file) {
                 $newName=date('Ymd').'_'.$file->getClientOriginalName();
 //                $newName=$file->getClientOriginalName();
 
                 $path=$file->move(public_path().'/resources/uploads',$newName);
-                $filePath= '/resources/uploads/'.$newName;
+//                $path_way=public_path().'/resources/uploads/'.$newName;
+                $filePath=asset('/resources/uploads/'.$newName);
+//                dd($path_way);
+//                $filePath= '/resources/uploads/'.$newName;
                 $file_path_arrs[$key]=$filePath;
                 /*生成随机验证码*/
-                $radmon=mt_rand(100,999);
+//                $radmon=mt_rand(100,999);
                 $re = Updown::create([
                     'email' => $uploader,
                     'verify_code' => $radmon,
@@ -47,90 +42,26 @@ class UpController extends Controller
                 ]);
             }
             if($re){
-//                $msg={};
-//                $msg=['status'=>0,'message'=>'content & question_id are required!'];
-                /*
-                 * 返回成功信息无法实现*/
-                return redirect()->route('home')->with('status', 'Profile updated!');
 
+                $mail_data=array(
+                    'email'=>$uploader,
+                    'verify_code'=>$radmon,
+                    'subject'=>'您已成功上传的文件至UpDown!',
+                );
+
+                Mail::send('emails.test',$mail_data,function ($message) use($mail_data){
+                    $message
+                        ->from('tommywhy2016@gmail.com')
+//                from 设置无效 但必须填写
+                        ->to('tommywhy1989@gmail.com')
+                        ->subject($mail_data['subject']);
+                });
+                return redirect()->route('home')->with('status', 'Profile updated and send verify code to your email!');
             }else{
-                    return back()->with('status','添加数据错误！');
+                    return back()->with('status','update fail！');
             }
-
-
-
-
-//        }
-
-
-
 
     }
     
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

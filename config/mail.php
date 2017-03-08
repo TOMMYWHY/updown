@@ -56,6 +56,7 @@ return [
     */
 
     'from' => ['address' => null, 'name' => null],
+//    'from' => array('address' => 'tommywhy2016@gami.com', 'name' => 'TestMail'),
 
     /*
     |--------------------------------------------------------------------------

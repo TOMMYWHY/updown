@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Updown;
+use Illuminate\Contracts\Mail\MailQueue;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Mail;
 
 class IndexController extends Controller
 {
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -21,6 +26,9 @@ class IndexController extends Controller
 //        dd($data);
         return view('welcome',compact('data'));
     }
+
+
+   
 
     /**
      * Show the form for creating a new resource.
