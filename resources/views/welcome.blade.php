@@ -50,7 +50,7 @@
     <body>
         <div class="container">
             <div class="content">
-                <img src="{{asset('resources/uploads/20170308_oo.jpg')}}" alt="">
+{{--                <img src="{{asset('resources/uploads/20170308_oo.jpg')}}" alt="">--}}
                 <div class="title">Up Down</div>
             </div>
         </div>
@@ -59,11 +59,11 @@
              <form method="POST"  action="{{route('upload')}}" accept-charset="UTF-8" enctype="multipart/form-data">
                  <input type="hidden" name="_token" value="{{csrf_token()}}" >
                  <div class="form-group">
-                    <label for="">Email:</label><input class="form-control" type="text" id="email" name="email">
+                    <label for="">Email:</label><input class="form-control" type="text" id="email" name="email" required>
                  </div>
                  <div class="form-group">
                      <label for="">File:</label>
-                     <input  multiple name="file_uploads[]" id="descImgs" type="file" onchange="readImg(this);" >
+                     <input style="margin: 0 auto; width: 180px;"  multiple name="file_uploads[]" id="descImgs" type="file" onchange="readImg(this);" required >
                  </div>
                  <div id="img_div"></div>
                 <input type="submit" class="btn btn-primary" value="submit" >
@@ -95,13 +95,13 @@
                         <td style=" max-width: 200px;overflow: hidden"><img src="{{$item->location}}" style="height: 60px;" alt=""></td>
                         <td>{{$item->created_at}}</td>
                         <td><input type="text" class="form-control" class="code" onchange="verifyCode(this,'{{$item->id}}')" /></td>
-                        {{--<td><input type="text" class="form-control" class="code" /></td>--}}
                         <td>
                             <a href="{{$item->location}}"  download="{{$item->files_name}}">
                                 <button class="btn btn-success"  id="{{$item->id}}" disabled="disabled"  >
                                 Download
                                 </button>
                             </a>
+                            {{--<button class="btn" onclick="downloadBtn({{$item->id}})">download</button>--}}
                         </td>
                     </tr>
                     @endforeach
@@ -112,6 +112,26 @@
     </body>
 </html>
 <script>
+    function downloadBtn(id) {
+        $.post(
+            "{{route('download')}}",{
+                'id':id,
+//                'verify_code':obj.value,
+                '_token':'{{csrf_token()}}',
+            },function (r) {
+                console.log(r.status);
+                if(r.status!=1){
+                    console.log(r.msg);
+                }else{
+//                    $('#'+id).removeAttr('disabled');
+                    console.log(r.msg);
+
+                }
+            }
+        );
+    }
+
+
     function verifyCode(obj,id) {
         $.post(
             "{{route('verifyCode')}}",{

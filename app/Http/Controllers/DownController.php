@@ -34,10 +34,14 @@ class DownController extends Controller
         /*
          * ?????????*/
         $input=$request->all();
+//        dd($input);
         $file=Updown::find($input['id']);
         $file_name=$file['files_name'];
         $path=public_path('resources/uploads/'.$file_name);
-        $headers = ['Content-Type: application/pdf'];
+//        dd($path);
+        $headers = array('Content-Type=>image/jpeg');
+//        dd(response()->download($path,$file_name,$headers));
+//        return response()->download($path,$file_name,$headers);
         return response()->download($path,$file_name,$headers);
     }
 
